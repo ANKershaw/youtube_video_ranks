@@ -1,1 +1,0 @@
-{"video_id": "str", "trending_date": "str", "title": "str", "channel_title": "str", "category_id": "Int64", "publish_time": "datetime64[ns, UTC]", "tags": "str", "views": "Int64", "likes": "Int64", "dislikes": "Int64", "comment_count": "Int64", "thumbnail_link": "str", "comments_disabled": "bool", "ratings_disabled": "bool", "video_error_or_removed": "bool", "description": "str"}

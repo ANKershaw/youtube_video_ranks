@@ -307,3 +307,7 @@ terraform.rc
 # Ignore credential file for GCS
 terraform/key/*.json
 !/terraform/key/service_account_key.json.bkup
+
+# Ignore private notes directory
+private
+

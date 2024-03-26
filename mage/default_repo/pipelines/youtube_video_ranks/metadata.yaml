@@ -4,7 +4,7 @@ blocks:
   configuration:
     dynamic: false
   downstream_blocks:
-  - transform_video_data
+  - transform_data_in
   executor_config: null
   executor_type: local_python
   has_callback: false
@@ -19,7 +19,8 @@ blocks:
 - all_upstream_blocks_executed: true
   color: null
   configuration: {}
-  downstream_blocks: []
+  downstream_blocks:
+  - transform_data_jp
   executor_config: null
   executor_type: local_python
   has_callback: false
@@ -34,7 +35,41 @@ blocks:
 - all_upstream_blocks_executed: true
   color: null
   configuration: {}
+  downstream_blocks:
+  - send_to_gcs_jp
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: transform_data_jp
+  retry_config: null
+  status: executed
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - download_data_jp
+  uuid: transform_data_jp
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
   downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: send_to_gcs_jp
+  retry_config: null
+  status: executed
+  timeout: null
+  type: data_exporter
+  upstream_blocks:
+  - transform_data_jp
+  uuid: send_to_gcs_jp
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - transform_data_us
   executor_config: null
   executor_type: local_python
   has_callback: false
@@ -48,23 +83,21 @@ blocks:
   uuid: download_data_us
 - all_upstream_blocks_executed: true
   color: null
-  configuration:
-    dynamic: false
-    reduce_output: true
+  configuration: {}
   downstream_blocks:
-  - send_to_gcs
+  - send_to_gcs_us
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: python
-  name: transform_video_data
+  name: transform_data_us
   retry_config: null
   status: executed
   timeout: null
   type: transformer
   upstream_blocks:
-  - download_data_in
-  uuid: transform_video_data
+  - download_data_us
+  uuid: transform_data_us
 - all_upstream_blocks_executed: true
   color: null
   configuration: {}
@@ -73,14 +106,47 @@ blocks:
   executor_type: local_python
   has_callback: false
   language: python
-  name: send_to_gcs
+  name: send_to_gcs_us
   retry_config: null
-  status: failed
+  status: executed
   timeout: null
   type: data_exporter
   upstream_blocks:
-  - transform_video_data
-  uuid: send_to_gcs
+  - transform_data_us
+  uuid: send_to_gcs_us
+- all_upstream_blocks_executed: false
+  color: null
+  configuration: {}
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: send_to_gcs_in
+  retry_config: null
+  status: executed
+  timeout: null
+  type: data_exporter
+  upstream_blocks:
+  - transform_data_in
+  uuid: send_to_gcs_in
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - send_to_gcs_in
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: transform_data_in
+  retry_config: null
+  status: updated
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - download_data_in
+  uuid: transform_data_in
 cache_block_output_in_memory: false
 callbacks: []
 concurrency_config: {}

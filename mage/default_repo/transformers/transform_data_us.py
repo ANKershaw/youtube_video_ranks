@@ -25,12 +25,12 @@ def transform(data: DataFrame):
 
     # trending_date is in string format '18.17.02'
 
-
+    country = "US"
     data['trending_date'] = pd.to_datetime(data['trending_date'], format="%y.%d.%m")
     
-    print(data.shape)
+    print(f'original data shape for {country}: {data.shape}')
     data = data.drop_duplicates().dropna()
-    print(data.shape)
+    print(f'finished processing data for {country}: {data.shape}')
 
     return data
 

@@ -3,6 +3,9 @@ from mage_ai.io.config import ConfigFileLoader
 from mage_ai.io.google_cloud_storage import GoogleCloudStorage
 from pandas import DataFrame
 from os import path
+import pyarrow.parquet as pq 
+import pyarrow as pa 
+
 
 if 'data_exporter' not in globals():
     from mage_ai.data_preparation.decorators import data_exporter
@@ -20,10 +23,16 @@ def export_data_to_google_cloud_storage(df: DataFrame, **kwargs) -> None:
     config_profile = 'default'
 
     bucket_name = 'youtube-video-ranks-bucket'
-    object_key = 'rankings_US'
+    table_name = 'rankings_US'
+    root_path = f'{bucket_name}/{table_name}'
 
-    GoogleCloudStorage.with_config(ConfigFileLoader(config_path, config_profile)).export(
-        df,
-        bucket_name,
-        object_key,
+    table = pa.Table.from_pandas(df)
+
+    gcs = pa.fs.GcsFileSystem()
+
+    pq.write_to_dataset(
+        table,
+        root_path=root_path,
+        partition_cols=['trending_date'],
+        filesystem=gcs
     )

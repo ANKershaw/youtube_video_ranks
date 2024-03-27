@@ -1,6 +1,3 @@
-import pandas as pd
-from pandas import DataFrame
-
 if 'transformer' not in globals():
     from mage_ai.data_preparation.decorators import transformer
 if 'test' not in globals():
@@ -8,7 +5,7 @@ if 'test' not in globals():
 
 
 @transformer
-def transform(data: DataFrame):
+def transform(data, *args, **kwargs):
     """
     Template code for a transformer block.
 
@@ -22,16 +19,12 @@ def transform(data: DataFrame):
     Returns:
         Anything (e.g. data frame, dictionary, array, int, str, etc.)
     """
-
-    # trending_date is in string format '18.17.02'
-
-    country = "IN"
-    data['trending_date'] = pd.to_datetime(data['trending_date'], format="%y.%d.%m")
-    
-    print(f'original data shape for {country}: {data.shape}')
-    data = data.drop_duplicates().dropna()
-    print(f'finished processing data for {country}: {data.shape}')
-
+    # Specify your transformation logic here
+    data.columns = (data.columns
+                    .str.replace(" ", "_")
+                    .str.lower() )
+    print(data.shape)
+    print(data.dtypes)
     return data
 
 

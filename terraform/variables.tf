@@ -20,5 +20,10 @@ variable "gcs_bucket" {
 
 variable "auth_key" {
   description = "the location/name of the credential file for the GSC service account."
-  default     = "./key/service_account_key.json"
+  default     = "~/keys/service_account_key.json"
+}
+
+variable "bigquery_dataset" {
+  description = "the dataset used for bigquery"
+  default = "country_data"
 }

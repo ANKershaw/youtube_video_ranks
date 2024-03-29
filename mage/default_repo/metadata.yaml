@@ -1,8 +1,5 @@
 project_type: standalone
 
-logging_config:
-  level: ERROR
-
 variables_dir: ~/.mage_data
 # remote_variables_dir: s3://bucket/path_prefix
 
@@ -54,10 +51,8 @@ notification_config:
     webhook_url: "{{ env_var('MAGE_SLACK_WEBHOOK_URL') }}"
   teams_config:
     webhook_url: "{{ env_var('MAGE_TEAMS_WEBHOOK_URL') }}"
-project_uuid: ffa9baf60dbc4a8e803a7727fb174c34
+project_uuid: 27fb5031b3c74318a08781869a3b70e6
 help_improve_mage: true
-features:
-  command_center: true
-  add_new_block_v2: true
-  code_block_v2: true
-pipelines:
+
+logging_config:
+  level: ERROR

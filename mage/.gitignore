@@ -1,8 +1,18 @@
-mage_data/default_repo/pipelines/*/.variables
+**/.variables
 mage_data/default_repo/.operation_history
 **/.pipelines/
+<<<<<<< HEAD
 */mage-ai.db
 **/.operation_history/
 mage_data/youtube_video_ranks/pipelines/*/.variables
 
 
+=======
+**/.logs
+**/mage-ai.db
+**/.operation_history/
+mage_data/youtube_video_ranks/pipelines/*/.variables
+mage_data/default_repo/mage-ai.db
+/mage_data/default_repo/.operation_history/
+/mage_data/default_repo/pipelines/
+>>>>>>> 91c0929d855d91a8b03a794e70abfbc44e4e427f

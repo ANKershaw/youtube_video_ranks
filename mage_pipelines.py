@@ -1,6 +1,7 @@
 import sys
 import time
 import requests
+import os
 
 
 def make_api_call(url, method):
@@ -54,25 +55,41 @@ def status_check(job_id):
 		
 		time.sleep(5)
 
-
-def main():
+def phase_1():
 	# this phase writes data from api to google cloud storage bucket
 	phase_one_url = "http://localhost:6789/api/pipeline_schedules/1/pipeline_runs/3ffcd4276d7b47cd890e60b828bc633c"
-	# this phase writes data from google cloud storage bucket to bigquery
-	phase_two_url = "http://localhost:6789/api/pipeline_schedules/2/pipeline_runs/afeb3a6f90a943e0ab61de1c14b41181"
-
 	# call the function to make the API call
 	api_data = make_api_call(phase_one_url, "POST")
 	if api_data:
-		print(f"running phase 1 with id: {api_data['pipeline_run']['id']}")
+		print(f"running pipeline 1 with id: {api_data['pipeline_run']['id']}")
 		status_check(api_data['pipeline_run']['id'])
-		print("you now have api data saved to GCS bucket.")
-		
+		keep_going = input("you now have api data saved to GCS bucket. do you want to run the second pipeline? (y/n)").lower()
+		if keep_going == "y" or keep_going == "yes":
+			phase_2()
+		else:
+			print("exiting.")
+			exit_program()
+def phase_2():
+	# this phase writes data from google cloud storage bucket to bigquery
+	phase_two_url = "http://localhost:6789/api/pipeline_schedules/2/pipeline_runs/afeb3a6f90a943e0ab61de1c14b41181"
 	api_data = make_api_call(phase_two_url, "POST")
 	if api_data:
 		print(f"running phase 2 with id: {api_data['pipeline_run']['id']}")
 		status_check(api_data['pipeline_run']['id'])
 		print("you now have gcs data saved to BigQuery tables.")
+
+def main():
+
+	phase_number = input("Which pipeline do you want to run?\n   1) api to gcs folder\n   2) gcs folder to bigquery ").strip(" ")
+	if phase_number == 1:
+		phase_1()
+	
+	if phase_number == 2:
+		phase_2()
+		
+	else:
+		print("no pipeline selected. exiting.")
+		exit_program()
 
 		
 if __name__ == "__main__":

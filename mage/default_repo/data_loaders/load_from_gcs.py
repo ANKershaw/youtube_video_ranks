@@ -3,6 +3,8 @@ from mage_ai.io.config import ConfigFileLoader
 from mage_ai.io.google_cloud_storage import GoogleCloudStorage
 from typing import Dict, List
 from os import path
+import os
+
 if 'data_loader' not in globals():
     from mage_ai.data_preparation.decorators import data_loader
 if 'test' not in globals():
@@ -27,7 +29,7 @@ def load_from_google_cloud_storage(*args, **kwargs) -> List[List[Dict]]:
     # [ {'country':JP, 'country_data':dataFrame}]
  
     for country in countries: 
-        bucket_name = 'youtube-video-ranks-bucket'
+        bucket_name = os.environ['GCS_BUCKET_NAME']
         object_key = f'rankings_{country}.parquet'
 
 

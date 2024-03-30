@@ -3,6 +3,7 @@ from mage_ai.io.config import ConfigFileLoader
 from mage_ai.io.google_cloud_storage import GoogleCloudStorage
 from pandas import DataFrame
 import pandas as pd
+import os
 from os import path
 from typing import Dict
 
@@ -25,7 +26,7 @@ def export_data_to_google_cloud_storage(data_dict: Dict, **kwargs) -> None:
     config_path = path.join(get_repo_path(), 'io_config.yaml')
     config_profile = 'default'
 
-    bucket_name = 'youtube-video-ranks-bucket'
+    bucket_name = os.environ['GCS_BUCKET_NAME']
     object_key = f'rankings_{country}.parquet'
 
 

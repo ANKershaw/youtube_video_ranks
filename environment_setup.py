@@ -7,7 +7,8 @@ def file_exists(file_path):
 
 def main():
     terraform_tfvars_file = "terraform/terraform.tfvars"
-    env_file = ".env"
+    env_file = "mage/.env"
+    docker_file = "mage/docker_start.txt"
     
     # Ask user for input
     gcs_project_name = input("What is your Google Cloud project name: ").strip(" ").replace("'", "").replace('"', '')
@@ -52,13 +53,14 @@ region = "{gcs_region_name}"
 gcs_bucket = "{gcs_bucket_name}"
 auth_key = "{gcs_key_location}"
             """)
+        
+        key_directory_path, key_filename = os.path.split(gcs_key_location)
         with open(env_file, "w") as file:
-            file.write(f"""GOOGLE_APPLICATION_CREDENTIALS={gcs_key_location}
-GCS_PROJECT_NAME:{gcs_project_name}
-GCS_REGION_NAME:{gcs_region_name}
-GCS_BUCKET_NAME:{gcs_bucket_name}
+            file.write(f"""GOOGLE_APPLICATION_CREDENTIALS=/home/keys/{key_filename}
+GCS_BUCKET_NAME={gcs_bucket_name}
             """)
-        print("Values have been written to the following files:\n.   env\n   terraform/.tfvars")
+
+        print("Values have been written to the following files:\n   mage/.env\n   mage/docker_start.txt\n   terraform/.tfvars")
     else:
         print("Input was not confirmed. Exiting...")
         

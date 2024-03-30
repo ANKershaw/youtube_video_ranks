@@ -15,7 +15,6 @@ provider "google" {
 resource "google_storage_bucket" "main-project-bucket" {
   name     = var.gcs_bucket
   location = var.location
-
 }
 
 resource "google_bigquery_dataset" "main-project-dataset" {

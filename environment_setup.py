@@ -1,0 +1,67 @@
+import os
+
+
+def file_exists(file_path):
+    return os.path.exists(file_path)
+
+
+def main():
+    terraform_tfvars_file = "terraform/terraform.tfvars"
+    env_file = ".env"
+    
+    # Ask user for input
+    gcs_project_name = input("What is your Google Cloud project name: ").strip(" ").replace("'", "").replace('"', '')
+    
+    gcs_bucket_name = (input("What is the name of the bucket you want created?\n(note: this must be a unique name): ")
+                       .strip(" ").replace("'", "").replace('"', ''))
+    
+    gcs_location_name = (input("In which geographical location is the bucket to be created?\n(default: US): ")
+                         .strip(" ").replace("'", "").replace('"', ''))
+    if len(gcs_location_name) == 0:
+        gcs_location_name = "US"
+        print("Using default: US")
+        
+    gcs_region_name = (input("In which region would you like your bucket located?\n(default: us-west1):").strip(" ")
+                       .replace("'", "").replace('"', ''))
+    if len(gcs_region_name) == 0:
+        gcs_region_name = "us-west1"
+        print("Using default: us-west1")
+    
+    gcs_key_location = (input("""What is the full path + filename of your Google Cloud account key?
+(eg:/Users/username/keys/service_account_key.json): """).strip(" ").
+                        replace("'", "").replace('"', ''))
+    
+    # Ask user to confirm the input
+    confirm = input(f"""Is the input correct?
+    project name: {gcs_project_name}
+    bucket name: {gcs_bucket_name}
+    gcs location: {gcs_location_name}
+    bucket region: {gcs_region_name}
+    key location: {gcs_key_location}
+    (yes/no): """).lower()
+    
+    # Check if the input is correct
+    if confirm == "yes" or confirm == "y":
+        # Open a file in write mode
+        with open(terraform_tfvars_file, "w") as file:
+            # Write the user input to the file
+            file.write(f"""
+project = "{gcs_project_name}"
+location = "{gcs_location_name}"
+region = "{gcs_region_name}"
+gcs_bucket = "{gcs_bucket_name}"
+auth_key = "{gcs_key_location}"
+            """)
+        with open(env_file, "w") as file:
+            file.write(f"""GOOGLE_APPLICATION_CREDENTIALS={gcs_key_location}
+GCS_PROJECT_NAME:{gcs_project_name}
+GCS_REGION_NAME:{gcs_region_name}
+GCS_BUCKET_NAME:{gcs_bucket_name}
+            """)
+        print("Values have been written to the following files:\n.   env\n   terraform/.tfvars")
+    else:
+        print("Input was not confirmed. Exiting...")
+        
+
+if __name__ == "__main__":
+    main()

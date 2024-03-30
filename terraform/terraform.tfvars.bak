@@ -1,0 +1,5 @@
+project = "your-GCS-project-name"
+location = "US"
+region = "us-west1"
+gcs_bucket = "unique-bucket-1234"
+auth_key = "/path/to/your/service/account/key.json"

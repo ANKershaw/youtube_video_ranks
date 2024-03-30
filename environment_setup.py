@@ -60,7 +60,7 @@ auth_key = "{gcs_key_location}"
 GCS_BUCKET_NAME={gcs_bucket_name}
             """)
 
-        print("Values have been written to the following files:\n   mage/.env\n   mage/docker_start.txt\n   terraform/.tfvars")
+        print("Values have been written to the following files:\n   mage/.env\n   terraform/.tfvars")
     else:
         print("Input was not confirmed. Exiting...")
         

@@ -16,7 +16,7 @@ with
             trending_date,
             title,
             channel_title,
-            category_id,
+            {{ dbt.safe_cast("category_id", api.Column.translate_type("integer")) }} as category_id,
             publish_time,
             tags,
             views,

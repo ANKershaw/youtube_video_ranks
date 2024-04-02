@@ -1,0 +1,12 @@
+version: 2
+
+seeds:
+  - name: IN_category_id
+    description: >
+      Provides the category mapping for the trending YouTube videos for India. Categories can vary between regions.
+  - name: JP_category_id
+    description: >
+      Provides the category mapping for the trending YouTube videos for Japan. Categories can vary between regions.
+  - name: US_category_id
+    description: >
+      Provides the category mapping for the trending YouTube videos for the US. Categories can vary between regions.

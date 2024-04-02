@@ -14,7 +14,7 @@ JP_trending as (
 ), 
 US_trending as (
     select *
-    from {{ ref('stg_partitioned_JP') }}
+    from {{ ref('stg_partitioned_US') }}
 ), 
 categories as (
     select * from {{ ref('dim_categories') }}
@@ -31,7 +31,7 @@ select videos_unioned.video_id,
     videos_unioned.trending_date,
     videos_unioned.title,
     videos_unioned.channel_title,
-    CAST(videos_unioned.category_id AS INT),
+    category_id,
     videos_unioned.publish_time,
     videos_unioned.tags,
     videos_unioned.views,
@@ -39,14 +39,22 @@ select videos_unioned.video_id,
     videos_unioned.dislikes,
     videos_unioned.comment_count,
     videos_unioned.thumbnail_link,
-    videos_unioned.comments_disable,
-    videos_unioned.ratings_disable,
+    videos_unioned.comments_disabled,
+    videos_unioned.ratings_disabled,
     videos_unioned.video_error_or_removed,
     videos_unioned.description,
     videos_unioned.country,
-    categories.title AS category_name
+    categories.category AS category_name
 from videos_unioned
 left join categories ON
 videos_unioned.category_id = categories.id
 AND
 videos_unioned.country = categories.country
+
+
+-- dbt build --select <model_name> --vars '{'is_test_run': 'false'}'
+{% if var('is_test_run', default=true) %}
+
+  limit 100
+
+{% endif %}

@@ -58,6 +58,7 @@ auth_key = "{gcs_key_location}"
         with open(env_file, "w") as file:
             file.write(f"""GOOGLE_APPLICATION_CREDENTIALS=/home/keys/{key_filename}
 GCS_BUCKET_NAME={gcs_bucket_name}
+GCS_PROJECT_NAME={gcs_project_name}
             """)
 
         print("Values have been written to the following files:\n   mage/.env\n   terraform/.tfvars")

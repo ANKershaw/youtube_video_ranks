@@ -76,16 +76,38 @@ def phase_2():
 	if api_data:
 		print(f"running phase 2 with id: {api_data['pipeline_run']['id']}")
 		status_check(api_data['pipeline_run']['id'])
-		print("you now have gcs data saved to BigQuery tables.")
+		keep_going = input("you now have gcs data saved to BigQuery tables. do you want to run the dbt pipeline? (y/n)").lower()
+		if keep_going == "y" or keep_going == "yes":
+			phase_3()
+		else:
+			print("exiting.")
+			exit_program()
+			
+def phase_3():
+	# this phase executes the dbt seed and build operations to create BigQuery views
+	phase_three_url = "http://localhost:6789/api/pipeline_schedules/3/pipeline_runs/b6a9d107b2e74927b552bce51e848501"
+	api_data = make_api_call(phase_three_url, "POST")
+	if api_data:
+		print(f"running phase 3 with id: {api_data['pipeline_run']['id']}")
+		status_check(api_data['pipeline_run']['id'])
+		print("you now have views in BigQuery")
+
 
 def main():
 
-	phase_number = input("Which pipeline do you want to run?\n   1) api to gcs folder\n   2) gcs folder to bigquery ").strip(" ")
+	phase_number = input("""Which pipeline do you want to run?
+1) api to gcs folder
+2) gcs folder to bigquery
+3) dbt build
+	""").strip(" ")
 	if phase_number == 1:
 		phase_1()
 	
 	if phase_number == 2:
 		phase_2()
+	
+	if phase_number == 3:
+		phase_3()
 		
 	else:
 		print("no pipeline selected. exiting.")

@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: staging
+    database: youtube-video-ranks
+    schema: country_data
+
+    tables:
+      - name: partitioned_JP
+      - name: partitioned_IN
+      - name: partitioned_US

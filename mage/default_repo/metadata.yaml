@@ -56,3 +56,7 @@ help_improve_mage: true
 
 logging_config:
   level: ERROR
+features:
+  add_new_block_v2: true
+  dbt_v2: true
+pipelines:

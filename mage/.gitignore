@@ -16,3 +16,6 @@ mage_data/default_repo/mage-ai.db
 /mage_data/default_repo/.operation_history/
 /mage_data/default_repo/pipelines/
 >>>>>>> 91c0929d855d91a8b03a794e70abfbc44e4e427f
+/mage_start.txt
+/mage_start.sh
+/mage_start.bat

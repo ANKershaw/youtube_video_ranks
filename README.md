@@ -14,8 +14,8 @@ The data is being hosted in GitHub because the JP video file had encoding errors
 
 ## Prerequisites
 1. Python 3 
-1. Docker
-2. Terraform
+2. Docker
+3. Terraform
 
 
 ## Instructions
@@ -26,7 +26,7 @@ The data is being hosted in GitHub because the JP video file had encoding errors
 git clone https://github.com/ANKershaw/youtube_video_ranks.git
 ```
 
-### GCS Project Creation
+## GCS Project Creation
 
 Create a new project called `youtube-video-ranks` via: https://console.cloud.google.com/projectcreate
 

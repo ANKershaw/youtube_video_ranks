@@ -1,8 +1,19 @@
 import sys
 import time
 import requests
-import os
 
+
+def get_pipeline_trigger_ids() -> {}:
+	id_dict = {}
+	trigger_names = ["phase 1", "phase 2", "phase 3"]
+	url = 'http://localhost:6789/api/pipeline_schedules'
+	response = make_api_call(url, 'GET')
+	for dictionary in response['pipeline_schedules']:
+		if dictionary['name'] in trigger_names:
+			id_dict[dictionary['name']] = dictionary['id']
+	
+	return id_dict
+	
 
 def make_api_call(url, method):
 	try:
@@ -56,9 +67,9 @@ def status_check(job_id):
 		time.sleep(5)
 
 
-def phase_1():
+def phase_1(trigger_id):
 	# this phase writes data from api to google cloud storage bucket
-	phase_one_url = "http://localhost:6789/api/pipeline_schedules/5/pipeline_runs/key"
+	phase_one_url = f"http://localhost:6789/api/pipeline_schedules/{trigger_id}/pipeline_runs/key"
 	# call the function to make the API call
 	api_data = make_api_call(phase_one_url, "POST")
 	if api_data:
@@ -75,9 +86,9 @@ def phase_1():
 			exit_program()
 
 
-def phase_2():
+def phase_2(trigger_id):
 	# this phase writes data from google cloud storage bucket to bigquery
-	phase_two_url = "http://localhost:6789/api/pipeline_schedules/2/pipeline_runs/key"
+	phase_two_url = f"http://localhost:6789/api/pipeline_schedules/{trigger_id}/pipeline_runs/key"
 	api_data = make_api_call(phase_two_url, "POST")
 	if api_data:
 		print(f"Running Phase 2 with id: {api_data['pipeline_run']['id']}")
@@ -94,9 +105,9 @@ def phase_2():
 			exit_program()
 
 
-def phase_3():
+def phase_3(trigger_id):
 	# this phase executes the dbt seed and build operations to create BigQuery views
-	phase_three_url = "http://localhost:6789/api/pipeline_schedules/3/pipeline_runs/key"
+	phase_three_url = f"http://localhost:6789/api/pipeline_schedules/{trigger_id}/pipeline_runs/key"
 	api_data = make_api_call(phase_three_url, "POST")
 	if api_data:
 		print(f"Running Phase 3 with id: {api_data['pipeline_run']['id']}")
@@ -106,19 +117,21 @@ def phase_3():
 
 
 def main():
+	pipelines_id_dict = get_pipeline_trigger_ids()
+
 	phase_number = int(input("""Which pipeline do you want to run?
 1) Phase 1 : Api to GCS folder
 2) Phase 2 : GCS folder to BigQuery
 3) Phase 3 : dbt build
 """).strip(" "))
 	if phase_number == 1:
-		phase_1()
+		phase_1(pipelines_id_dict['phase 1'])
 	
 	if phase_number == 2:
-		phase_2()
+		phase_2(pipelines_id_dict['phase 2'])
 	
 	if phase_number == 3:
-		phase_3()
+		phase_3(pipelines_id_dict['phase 3'])
 	
 	else:
 		print("No pipeline selected. Exiting.")

@@ -1,12 +1,12 @@
 triggers:
 - envs: []
-  last_enabled_at: 2024-03-29 18:24:08.144162
-  name: phase_1
+  last_enabled_at: 2024-04-04 20:11:33.287680
+  name: phase 1
   pipeline_uuid: trending_video_api_to_gcs
-  schedule_interval: null
-  schedule_type: api
+  schedule_interval: '@once'
+  schedule_type: time
   settings: null
   sla: null
-  start_time: 2024-03-29 18:23:00
+  start_time: 2024-04-03 19:49:00
   status: active
   variables: {}

@@ -1,5 +1,5 @@
 blocks:
-- all_upstream_blocks_executed: true
+- all_upstream_blocks_executed: false
   color: null
   configuration:
     dbt:
@@ -16,7 +16,7 @@ blocks:
   language: yaml
   name: build_everything
   retry_config: null
-  status: executed
+  status: updated
   timeout: null
   type: dbt
   upstream_blocks:
@@ -40,7 +40,7 @@ blocks:
   language: yaml
   name: seed
   retry_config: null
-  status: executed
+  status: updated
   timeout: null
   type: dbt
   upstream_blocks: []

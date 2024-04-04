@@ -1,10 +1,10 @@
 triggers:
 - envs: []
   last_enabled_at: 2024-04-03 14:25:26.382685
-  name: phase_3
+  name: phase 3
   pipeline_uuid: trending_video_dbt
-  schedule_interval: null
-  schedule_type: api
+  schedule_interval: '@once'
+  schedule_type: time
   settings: null
   sla: null
   start_time: 2024-04-03 14:24:00

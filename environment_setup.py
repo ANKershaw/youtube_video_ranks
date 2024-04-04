@@ -28,9 +28,10 @@ def main():
         gcs_region_name = "us-west1"
         print("Using default: us-west1")
     
+    # terraform doesn't like '\' on Windows
     gcs_key_location = (input("""What is the full path + filename of your Google Cloud account key?
 (eg:/Users/username/keys/service_account_key.json): """).strip(" ").
-                        replace("'", "").replace('"', ''))
+                        replace("'", "").replace('"', '').replace('\\', '/'))
     
     # Ask user to confirm the input
     confirm = input(f"""Is the input correct?

@@ -6,10 +6,16 @@ The data is from the "Trending YouTube Video Statistics" dataset on Kaggle:
 
 https://www.kaggle.com/datasets/datasnaek/youtube-new
 
-The data is being hosted in github because the JP video file had encoding errors that needed to be corrected. 
+The data is being hosted in GitHub because the JP video file had encoding errors that needed to be corrected. 
 
 
 ## Project Breakdown
+
+
+## Prerequisites
+1. python 3 
+1. docker
+2. terraform
 
 
 ## Instructions
@@ -43,16 +49,20 @@ Service Account -> Actions -> Manage Keys -> Create a New Key -> JSON
 
 ### Environment file
 
-create the environment file and change the location of the key as needed
+Create project variable files by running:
 
 ```commandline
-cp .env.bak .env
+python3 environment_setup.py
 ```
 
-Note: if your .json key is not located at `~/keys/service_account_key.json`,
-Change the key location in the following places:
-`youtube_video_ranks/terraform/variables.tf [auth_key][default`
-`youtube_video_ranks/.env`
+this script will ask for:
+1. Google Cloud project name (should be 'youtube-video-ranks')
+2. The name of the bucket you want created (must be unique)
+3. Geographical region for the bucket 
+
+The script will create two files:
+mage/.env
+terraform/.tfvars
 
 ## Terraform GCS bucket creation
 
@@ -61,12 +71,12 @@ Instructions are provided [here](https://developer.hashicorp.com/terraform/tutor
 
 ### Make sure your terraform location and region are correct
 
-Change `location` and `region` data as needed in: 
-    `youtube_video_ranks/terraform/variables.tf`
-
+Double check the terraform/.tfvars file
 
 ## Now run the following from the terraform directory (youtube_video_ranks/terraform):
 ```commandline
+cd terraform
+
 terraform init
 
 terraform plan

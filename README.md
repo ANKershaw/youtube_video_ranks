@@ -105,7 +105,7 @@ chmod +x mage_start.sh
 ### For Windows:
 From 'youtube_video_ranks/mage' run:
 ```commandline
-mage_start.bat
+./mage_start.bat
 ```
 
 After mage starts, you can check out the pipelines via:

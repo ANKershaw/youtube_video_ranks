@@ -91,6 +91,7 @@ Mage is where we will download the data files, process, and upload to GCS.
 
 From 'youtube_video_ranks/mage' run:
 ```commandline
+# need to mount key location 
 docker run -it -p 6789:6789 -v $(pwd):/home/src --env-file ../.env mageai/mageai
 ```
 

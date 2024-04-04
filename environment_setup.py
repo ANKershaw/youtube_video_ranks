@@ -8,7 +8,7 @@ def file_exists(file_path):
 def main():
     terraform_tfvars_file = "terraform/terraform.tfvars"
     env_file = "mage/.env"
-    docker_file = "mage/docker_start.txt"
+    mage_start = "mage/mage_start.txt"
     
     # Ask user for input
     gcs_project_name = input("What is your Google Cloud project name: ").strip(" ").replace("'", "").replace('"', '')
@@ -59,6 +59,10 @@ auth_key = "{gcs_key_location}"
             file.write(f"""GOOGLE_APPLICATION_CREDENTIALS=/home/keys/{key_filename}
 GCS_BUCKET_NAME={gcs_bucket_name}
 GCS_PROJECT_NAME={gcs_project_name}
+            """)
+        
+        with open(mage_start, "w") as file:
+            file.write(f"""docker run -it -p 6789:6789 -v $(pwd):/home/src -v {key_directory_path}:/home/keys --env-file .env mageai/mageai
             """)
 
         print("Values have been written to the following files:\n   mage/.env\n   terraform/.tfvars")

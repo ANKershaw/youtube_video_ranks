@@ -1,0 +1,2 @@
+docker run -it -p 6789:6789 -v $(pwd):/home/src -v <your key directory>:/home/keys --env-file .env mageai/mageai
+            

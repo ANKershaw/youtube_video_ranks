@@ -8,7 +8,9 @@ def file_exists(file_path):
 def main():
     terraform_tfvars_file = "terraform/terraform.tfvars"
     env_file = "mage/.env"
-    docker_file = "mage/docker_start.txt"
+    mage_start_win = "mage/mage_start.bat"
+    mage_start_unix = "mage/mage_start.sh"
+    file_list = [terraform_tfvars_file, env_file, mage_start_win, mage_start_unix]
     
     # Ask user for input
     gcs_project_name = input("What is your Google Cloud project name: ").strip(" ").replace("'", "").replace('"', '')
@@ -40,7 +42,10 @@ def main():
     gcs location: {gcs_location_name}
     bucket region: {gcs_region_name}
     key location: {gcs_key_location}
-    (yes/no): """).lower()
+    (yes/no, default: yes): """).lower()
+    
+    if len(confirm) == 0:
+        confirm = "yes"
     
     # Check if the input is correct
     if confirm == "yes" or confirm == "y":
@@ -61,8 +66,19 @@ auth_key = "{gcs_key_location}"
 GCS_BUCKET_NAME={gcs_bucket_name}
 GCS_PROJECT_NAME={gcs_project_name}
             """)
+        
+        with open(mage_start_win, "w") as file:
+            file.write(f"""docker run -it -p 6789:6789 -v $(pwd):/home/src -v {key_directory_path}:/home/keys --env-file .env mageai/mageai
+            """)
+            
+        with open(mage_start_unix, "w") as file:
+            file.write(f"""#!/bin/bash
+docker run -it -p 6789:6789 -v $(pwd):/home/src -v {key_directory_path}:/home/keys --env-file .env mageai/mageai
+                 """)
 
-        print("Values have been written to the following files:\n   mage/.env\n   terraform/.tfvars")
+        print(f"Values have been written to the following files:")
+        print('\n'.join([f"   {file}" for file in file_list]))
+        
     else:
         print("Input was not confirmed. Exiting...")
         

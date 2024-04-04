@@ -13,9 +13,9 @@ The data is being hosted in GitHub because the JP video file had encoding errors
 
 
 ## Prerequisites
-1. python 3 
-1. docker
-2. terraform
+1. Python 3 
+1. Docker
+2. Terraform
 
 
 ## Instructions
@@ -35,10 +35,11 @@ Create a new project called `youtube-video-ranks` via: https://console.cloud.goo
 https://console.cloud.google.com/iam-admin/serviceaccounts
 Create a service account in your Google Cloud project 
 IAM & Admin -> Service Accounts -> Create a Service Account 
-    With Roles:
-        Cloud Storage -> Storage Admin
-        BigQuery -> BigQuery Admin
-        Compute Engine -> Compute Admin 
+<p>With Roles:
+
+* Cloud Storage -> Storage Admin
+* BigQuery -> BigQuery Admin
+* Compute Engine -> Compute Admin 
 
 
 Note: this is meant to be a demo and the permissions granted above are overly broad. 
@@ -59,10 +60,14 @@ this script will ask for:
 1. Google Cloud project name (should be 'youtube-video-ranks')
 2. The name of the bucket you want created (must be unique)
 3. Geographical region for the bucket 
+4. Location of your google service account key (should be `~/keys/service_account_key.json`)
 
-The script will create two files:
-mage/.env
-terraform/.tfvars
+The script will create the following files:
+    terraform/terraform.tfvars
+    mage/.env
+    mage/mage_start.bat
+    mage/mage_start.sh
+
 
 ## Terraform GCS bucket creation
 
@@ -88,16 +93,27 @@ terraform apply
 ## Mage
 
 Mage is where we will download the data files, process, and upload to GCS. 
+<p>There is a pre-configured mage start script in the mage_start.sh and mage_start.bin files to help you get mage started
 
+### For Mac/Linux:
 From 'youtube_video_ranks/mage' run:
 ```commandline
-docker run -it -p 6789:6789 -v $(pwd):/home/src --env-file ../.env mageai/mageai
+chmod +x mage_start.sh
+./mage_start.sh
 ```
+
+### For Windows:
+From 'youtube_video_ranks/mage' run:
+```commandline
+mage_start.bat
+```
+
+After mage starts, you can check out the pipelines via:
+[localhost:6789](http://localhost:6789/pipelines/youtube_video_ranks/edit?sideview=tree)
 
 ### Data download / transform / upload with Mage
 
-In your browser, go to :
-[localhost:6789](http://localhost:6789/pipelines/youtube_video_ranks/edit?sideview=tree)
+
 
 
 

@@ -90,7 +90,8 @@ def phase_3():
 	if api_data:
 		print(f"running phase 3 with id: {api_data['pipeline_run']['id']}")
 		status_check(api_data['pipeline_run']['id'])
-		print("you now have views in BigQuery")
+		print("you now have views in BigQuery. Mage pipelines are complete!")
+		exit_program()
 
 
 def main():

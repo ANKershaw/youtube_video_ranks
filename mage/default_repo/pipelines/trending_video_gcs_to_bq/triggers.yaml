@@ -1,0 +1,12 @@
+triggers:
+- envs: []
+  last_enabled_at: 2024-03-29 18:58:42.649100
+  name: phase_2
+  pipeline_uuid: trending_video_gcs_to_bq
+  schedule_interval: null
+  schedule_type: api
+  settings: null
+  sla: null
+  start_time: 2024-03-29 18:58:00
+  status: active
+  variables: {}

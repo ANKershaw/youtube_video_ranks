@@ -10,6 +10,7 @@ terraform {
 provider "google" {
   project     = var.project
   region      = var.region
+  credentials = var.auth_key
 }
 
 resource "google_storage_bucket" "main-project-bucket" {

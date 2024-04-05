@@ -4,7 +4,7 @@
 
 YouTube tracks statistics for all videos on the platform and using proprietary methodology, determines which videos are trending. 
 The list is unique for each country YouTube serves, meaning that users in the US are seeing a different trending list 
-than users in India or Japan. Given this information, what differences are there between trending videos in India, Japab, 
+than users in India or Japan. Given this information, what differences are there between trending videos in India, Japan, 
 and the United States? 
 
 ## Dashboard
@@ -13,7 +13,6 @@ Dashboard
 0 points: No dashboard
 2 points: A dashboard with 1 tile
 4 points: A dashboard with 2 tiles
-
 
 
 ## Data Source 
@@ -31,28 +30,28 @@ And three files that serve as a map for the `category_id` field. These are used 
 * IN_category_id.csv
 * JP_category_id.csv
 * US_category_id.csv
-
+  
 
 ## Project Breakdown
 
 The project is a series of piplines orchestrated by [Mage](https://www.mage.ai/). There are five distinct parts to the project:
 * **Setup**: create GCS project, save credentials locally, run setup script to create GCS bucket and BigQuery schema
-* **Phase 1**: import data from API, transform for data lake, save to GCS bucket 
-* **Phase 2**: import data from GCS, transform for data warehouse, save to BigQuery
-* **Phase 3**: transform BigQuery data using dbt, prepare for dashboard
+* **Phase 1**: (mage) import data from API, transform for data lake, save to GCS bucket 
+* **Phase 2**: (mage) import data from GCS, transform for data warehouse, save to BigQuery
+* **Phase 3**: (mage0 create BigQuery views via dbt, prepare for dashboard
 * **Dashboard**: create dashboard in Looker Studio 
 
 ![Flow diagram in three phases. All phases are in a Mage orchestrator.](assets/flow_diagram.png "Flow Diagram for Youtube Trending Data Engineering Project")
 
-### Data Lake
-I am using Google Cloud Storage for my data lake, and the data is stored in parquet files:
+### Data Lake Details
+I am using Google Cloud Storage for my data lake. Data will be stored in the following parquet files:
 * rankings_IN.parquet
 * rankings_JP.parquet
 * rankings_US.parquet
 
 
-### Data Warehouse
-I am using BigQuery for my data warehouse. Data is stored in three datasets: 
+### Data Warehouse Details
+I am using BigQuery for my data warehouse. Data is stored in three tables: 
 * partitioned_IN
 * partitioned_JP
 * partitioned_US
@@ -60,7 +59,7 @@ I am using BigQuery for my data warehouse. Data is stored in three datasets:
 Each table is partitioned by `trending_date`. The data is not clustered since clustering (and partitioning for that matter)
 are not effective for data less than 1GB. These datasets are 48MB, 18MB, and 58MB, respectively.
 
-### Data Transformations
+### Data Transformation Details
 Data is transformed with dbt. 
 
 <details>
@@ -106,20 +105,18 @@ IAM & Admin -> Service Accounts -> Create a Service Account
 
 
 Note: this is meant to be a demo and the permissions granted above are overly broad. 
-https://cloud.google.com/docs/authentication/application-default-credentials
 
 Service Account -> Actions -> Manage Keys -> Create a New Key -> JSON
     Save this json file to `~/keys/service_account_key.json`
 
 
-## Instructions
+# Getting Started
 
-### All the steps at once
+## All the steps at once
 The steps are explained more below but if you just want to hit the ground running, here are all the steps at once.
-If you are on Windows, replace 
 This assumes you have done all the prerequisite steps. 
 
-## For Mac / Linux
+### For Mac / Linux
 ```commandline
 git clone https://github.com/ANKershaw/youtube_video_ranks.git
 cd youtube_video_ranks.git
@@ -135,7 +132,7 @@ chmod +x mage_start.sh
 python3 mage_pipelines_automatic.py
 ```
 
-## For Windows
+### For Windows
 ```commandline
 git clone https://github.com/ANKershaw/youtube_video_ranks.git
 cd youtube_video_ranks.git
@@ -149,6 +146,8 @@ cd ../mage
 ./mage_start.bat
 python3 mage_pipelines_automatic.py
 ```
+
+## More Detailed Steps
 
 ### Clone this repo
 
@@ -192,8 +191,8 @@ terraform init
 terraform plan
 terraform apply
 ```
-    
 
+    
 ### Mage
 
 Mage is where we will download the data files, process, and upload to GCS. 
@@ -215,7 +214,7 @@ From 'youtube_video_ranks/mage' run:
 After mage starts, you can check out the pipelines via:
 [localhost:6789](http://localhost:6789/pipelines/youtube_video_ranks/edit?sideview=tree)
 
-### Data download / transform / upload with Mage
+#### Data download / transform / upload with Mage
 
 There are 3 mage pipelines, and each one can be independently run in case of error.
 
@@ -223,7 +222,7 @@ Phase 1 : Move data from API to GCS
 Phase 2 : Move data from GCS to BigQuery
 Phase 3 : Create views with dbt 
 
-The pipelines can be executed by running:
+The pipelines can be executed automatically by running:
 ```commandline
 python3 mage_pipelines_automatic.py
 ```
@@ -232,11 +231,11 @@ If you want a more interactive experience, try:
 ```commandline
 python3 mage_pipelines_interactive.py
 ```
-Follow the prompts to run the pipelines. 
+And follow the prompts to run the pipelines. 
 
 You can check out the running pipelines by visiting the [Pipeline runs](http://localhost:6789/pipeline-runs) page
 
-## Results
+# Results
 After completing all steps above, you will have the following files:
 Google Cloud Storage
 * rankings_IN.parquet - API data from INvideos.csv.zip created in Mage pipeline Phase 1
@@ -258,7 +257,7 @@ Schema: country_data
 * fact_trending - fact table of video date created by dbt in Mage pipeline Phase 3
 
 
-### Cleanup
+# Cleanup
 
 From terraform directory:
 ```commandline

@@ -1,42 +1,86 @@
 # YouTube Trending Video Analysis
 
-## Data Source 
-
-The data is from the "Trending YouTube Video Statistics" dataset on Kaggle:
-
-https://www.kaggle.com/datasets/datasnaek/youtube-new
-
-The data is being hosted in GitHub because the JP video file had encoding errors that needed to be corrected. 
-
 ## Problem Statement
 
-## Project Breakdown
+YouTube tracks statistics for all videos on the platform and using proprietary methodology, determines which videos are trending. 
+The list is unique for each country YouTube serves, meaning that users in the US are seeing a different trending list 
+than users in India or Japan. Given this information, what differences are there between trending videos in India, Japab, 
+and the United States? 
 
-### Diagram
+## Dashboard
 
-### Problem description
- Problem is well described and it's clear what the problem the project solves
-
-Cloud
-2 points: The project is developed in the cloud
-4 points: The project is developed in the cloud and IaC tools are used
-Data ingestion (choose either batch or stream)
-Batch / Workflow orchestration
-4 points: End-to-end pipeline: multiple steps in the DAG, uploading data to data lake
-
-Data warehouse
-4 points: Tables are partitioned and clustered in a way that makes sense for the upstream queries (with explanation)
-Transformations (dbt, spark, etc)
-4 points: Tranformations are defined with dbt, Spark or similar technologies
 Dashboard
 0 points: No dashboard
 2 points: A dashboard with 1 tile
 4 points: A dashboard with 2 tiles
-Reproducibility
-0 points: No instructions how to run the code at all
-2 points: Some instructions are there, but they are not complete
-4 points: Instructions are clear, it's easy to run the code, and the code works
 
+
+
+## Data Source 
+
+The data is from the "Trending YouTube Video Statistics" dataset on [Kaggle](https://www.kaggle.com/datasets/datasnaek/youtube-new).
+There are many countries to choose from, but we will only use data from India, Japan, and the United States.
+The data is being hosted in GitHub because the Japanese file had encoding errors that needed to be corrected. 
+
+There are 6 files in the project. Three files for trending video data:
+* INvideos.csv.zip
+* JPvideos.csv.zip
+* USvideos.csv.zip
+
+And three files that serve as a map for the `category_id` field. These are used in the dbt step as seeds:
+* IN_category_id.csv
+* JP_category_id.csv
+* US_category_id.csv
+
+
+## Project Breakdown
+
+The project is a series of piplines orchestrated by [Mage](https://www.mage.ai/). There are five distinct parts to the project:
+* **Setup**: create GCS project, save credentials locally, run setup script to create GCS bucket and BigQuery schema
+* **Phase 1**: import data from API, transform for data lake, save to GCS bucket 
+* **Phase 2**: import data from GCS, transform for data warehouse, save to BigQuery
+* **Phase 3**: transform BigQuery data using dbt, prepare for dashboard
+* **Dashboard**: create dashboard in Looker Studio 
+
+![Flow diagram in three phases. All phases are in a Mage orchestrator.](assets/flow_diagram.png "Flow Diagram for Youtube Trending Data Engineering Project")
+
+### Data Lake
+I am using Google Cloud Storage for my data lake, and the data is stored in parquet files:
+* rankings_IN.parquet
+* rankings_JP.parquet
+* rankings_US.parquet
+
+
+### Data Warehouse
+I am using BigQuery for my data warehouse. Data is stored in three datasets: 
+* partitioned_IN
+* partitioned_JP
+* partitioned_US
+
+Each table is partitioned by `trending_date`. The data is not clustered since clustering (and partitioning for that matter)
+are not effective for data less than 1GB. These datasets are 48MB, 18MB, and 58MB, respectively.
+
+### Data Transformations
+Data is transformed with dbt. 
+
+<details>
+    <summary>DAG image</summary>
+
+![Directed Acyclic Graph for dbt workflow](assets/dbt_DAG.png)
+</details>
+
+### Orchestrator
+
+The Mage orchestrator runs the three phases mentioned above:
+* **Phase 1**: import data from API, transform for data lake, save to GCS bucket 
+* **Phase 2**: import data from GCS, transform for data warehouse, save to BigQuery
+* **Phase 3**: transform BigQuery data using dbt, prepare for dashboard
+
+<details>
+    <summary>Mage Pipelines</summary>
+
+![Explanation of the three Mage pipelines](assets/mage_pipelines.png)
+</details>
 
 ## Prerequisites
 
@@ -44,22 +88,6 @@ The following need to be installed before you can run this project:
 1. Python 3 
 2. Terraform
 3. Docker
-
-
-## Instructions
-
-### Clone this repo
-
-``` commandline
-git clone https://github.com/ANKershaw/youtube_video_ranks.git
-```
-
-### Install Python requirements
-
-```commandline
-pip install -r requirements.txt
-```
-
 
 ### GCS Project Creation
 
@@ -82,6 +110,57 @@ https://cloud.google.com/docs/authentication/application-default-credentials
 
 Service Account -> Actions -> Manage Keys -> Create a New Key -> JSON
     Save this json file to `~/keys/service_account_key.json`
+
+
+## Instructions
+
+### All the steps at once
+The steps are explained more below but if you just want to hit the ground running, here are all the steps at once.
+If you are on Windows, replace 
+This assumes you have done all the prerequisite steps. 
+
+## For Mac / Linux
+```commandline
+git clone https://github.com/ANKershaw/youtube_video_ranks.git
+cd youtube_video_ranks.git
+pip install -r requirements.txt
+python3 environment_setup.py
+cd terraform
+terraform init
+terraform plan
+terraform apply
+cd ../mage
+chmod +x mage_start.sh
+./mage_start.sh
+python3 mage_pipelines_automatic.py
+```
+
+## For Windows
+```commandline
+git clone https://github.com/ANKershaw/youtube_video_ranks.git
+cd youtube_video_ranks.git
+pip install -r requirements.txt
+python3 environment_setup.py
+cd terraform
+terraform init
+terraform plan
+terraform apply
+cd ../mage
+./mage_start.bat
+python3 mage_pipelines_automatic.py
+```
+
+### Clone this repo
+
+``` commandline
+git clone https://github.com/ANKershaw/youtube_video_ranks.git
+```
+
+### Install Python requirements
+
+```commandline
+pip install -r requirements.txt
+```
 
 ### Environment file
 
@@ -109,11 +188,8 @@ The script will create the following files:
 Run the following from the terraform directory (youtube_video_ranks/terraform):
 ```commandline
 cd terraform
-
 terraform init
-
 terraform plan
-
 terraform apply
 ```
     
@@ -149,10 +225,37 @@ Phase 3 : Create views with dbt
 
 The pipelines can be executed by running:
 ```commandline
-python3 mage_pipelines.py
+python3 mage_pipelines_automatic.py
 ```
 
+If you want a more interactive experience, try:
+```commandline
+python3 mage_pipelines_interactive.py
+```
 Follow the prompts to run the pipelines. 
+
+You can check out the running pipelines by visiting the [Pipeline runs](http://localhost:6789/pipeline-runs) page
+
+## Results
+After completing all steps above, you will have the following files:
+Google Cloud Storage
+* rankings_IN.parquet - API data from INvideos.csv.zip created in Mage pipeline Phase 1
+* rankings_JP.parquet - API data from JPvideos.csv.zip created in Mage pipeline Phase 1
+* rankings_US.parquet - API data from USvideos.csv.zip created in Mage pipeline Phase 1
+
+BigQuery
+Schema: country_data
+* partitioned_IN - partitioned table created in Mage pipeline Phase 2
+* partitioned_JP - partitioned table created in Mage pipeline Phase 2
+* partitioned_US - partitioned table created in Mage pipeline Phase 2
+* IN_category_id - seed table created by dbt in Mage pipeline Phase 3
+* JP_category_id - seed table created by dbt in Mage pipeline Phase 3
+* US_category_id - seed table created by dbt in Mage pipeline Phase 3
+* stg_partitioned_IN - stage table created by dbt in Mage pipeline Phase 3
+* stg_partitioned_JP - stage table created by dbt in Mage pipeline Phase 3
+* stg_partitioned_US - stage table created by dbt in Mage pipeline Phase 3
+* dim_categories - dimension table for categories created by dbt in Mage pipeline Phase 3
+* fact_trending - fact table of video date created by dbt in Mage pipeline Phase 3
 
 
 ### Cleanup

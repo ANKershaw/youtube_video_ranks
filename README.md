@@ -1,5 +1,35 @@
 # YouTube Trending Video Analysis
 
+<!-- TOC -->
+* [YouTube Trending Video Analysis](#youtube-trending-video-analysis)
+  * [Problem Statement](#problem-statement)
+  * [Dashboard](#dashboard)
+  * [Data Source](#data-source-)
+  * [Project Breakdown](#project-breakdown)
+    * [Data Lake Details](#data-lake-details)
+    * [Data Warehouse Details](#data-warehouse-details)
+    * [Data Transformation Details](#data-transformation-details)
+    * [Orchestrator](#orchestrator)
+  * [Prerequisites](#prerequisites)
+    * [GCS Project Creation](#gcs-project-creation)
+    * [GCS Service Account Creation](#gcs-service-account-creation)
+* [Getting Started](#getting-started)
+  * [All the steps at once](#all-the-steps-at-once)
+    * [For Mac / Linux](#for-mac--linux)
+    * [For Windows](#for-windows)
+  * [More Detailed Steps](#more-detailed-steps)
+    * [Clone this repo](#clone-this-repo)
+    * [Install Python requirements](#install-python-requirements)
+    * [Environment file](#environment-file)
+    * [Terraform GCS bucket creation](#terraform-gcs-bucket-creation)
+    * [Mage](#mage)
+      * [For Mac / Linux](#for-mac--linux-1)
+      * [For Windows](#for-windows-1)
+      * [Data download / transform / upload with Mage](#data-download--transform--upload-with-mage)
+* [Results](#results)
+* [Cleanup](#cleanup)
+<!-- TOC -->
+
 ## Problem Statement
 
 YouTube tracks statistics for all videos on the platform and using proprietary methodology, determines which videos are trending. 
@@ -198,14 +228,14 @@ terraform apply
 Mage is where we will download the data files, process, and upload to GCS. 
 <p>There is a pre-configured mage start script in the mage_start.sh and mage_start.bin files to help you get mage started
 
-#### For Mac/Linux:
+#### For Mac / Linux
 From 'youtube_video_ranks/mage' run:
 ```commandline
 chmod +x mage_start.sh
 ./mage_start.sh
 ```
 
-#### For Windows:
+#### For Windows
 From 'youtube_video_ranks/mage' run:
 ```commandline
 ./mage_start.bat

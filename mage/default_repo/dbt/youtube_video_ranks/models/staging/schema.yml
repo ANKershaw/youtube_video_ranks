@@ -2,7 +2,7 @@ version: 2
 
 sources:
   - name: staging
-    database: youtube-video-ranks
+    database:  "{{ env_var('GCS_PROJECT_NAME') }}"
     schema: country_data
 
     tables:

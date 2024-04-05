@@ -51,10 +51,3 @@ videos_unioned.category_id = categories.id
 AND
 videos_unioned.country = categories.country
 
-
--- dbt build --select <model_name> --vars '{'is_test_run': 'false'}'
-{% if var('is_test_run', default=true) %}
-
-  limit 100
-
-{% endif %}

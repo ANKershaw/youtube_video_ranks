@@ -1,27 +1,4 @@
 blocks:
-- all_upstream_blocks_executed: false
-  color: null
-  configuration:
-    dbt:
-      command: build
-    dbt_profile_target: dev
-    dbt_profiles_file_path: dbt/youtube_video_ranks/profiles.yml
-    dbt_project_name: dbt/youtube_video_ranks
-    file_source:
-      path: dbts/build_everything.yaml
-  downstream_blocks: []
-  executor_config: null
-  executor_type: local_python
-  has_callback: false
-  language: yaml
-  name: build_everything
-  retry_config: null
-  status: updated
-  timeout: null
-  type: dbt
-  upstream_blocks:
-  - seed
-  uuid: build_everything
 - all_upstream_blocks_executed: true
   color: null
   configuration:
@@ -40,11 +17,34 @@ blocks:
   language: yaml
   name: seed
   retry_config: null
-  status: updated
+  status: executed
   timeout: null
   type: dbt
   upstream_blocks: []
   uuid: seed
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    dbt:
+      command: build
+    dbt_profile_target: dev
+    dbt_profiles_file_path: dbt/youtube_video_ranks/profiles.yml
+    dbt_project_name: dbt/youtube_video_ranks
+    file_source:
+      path: dbts/build_everything.yaml
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: yaml
+  name: build_everything
+  retry_config: null
+  status: executed
+  timeout: null
+  type: dbt
+  upstream_blocks:
+  - seed
+  uuid: build_everything
 cache_block_output_in_memory: false
 callbacks: []
 concurrency_config: {}

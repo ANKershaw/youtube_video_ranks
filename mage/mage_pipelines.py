@@ -67,9 +67,9 @@ def status_check(job_id):
 		time.sleep(5)
 
 
-def phase_1(trigger_id):
+def phase_1(pipelines_id_dict):
 	# this phase writes data from api to google cloud storage bucket
-	phase_one_url = f"http://localhost:6789/api/pipeline_schedules/{trigger_id}/pipeline_runs/key"
+	phase_one_url = f"http://localhost:6789/api/pipeline_schedules/{pipelines_id_dict['phase 1']}/pipeline_runs/key"
 	# call the function to make the API call
 	api_data = make_api_call(phase_one_url, "POST")
 	if api_data:
@@ -80,15 +80,15 @@ def phase_1(trigger_id):
 		if len(keep_going) == 0:
 			keep_going = 'y'
 		if keep_going == "y" or keep_going == "yes":
-			phase_2()
+			phase_2(pipelines_id_dict)
 		else:
 			print("exiting.")
 			exit_program()
 
 
-def phase_2(trigger_id):
+def phase_2(pipelines_id_dict):
 	# this phase writes data from google cloud storage bucket to bigquery
-	phase_two_url = f"http://localhost:6789/api/pipeline_schedules/{trigger_id}/pipeline_runs/key"
+	phase_two_url = f"http://localhost:6789/api/pipeline_schedules/{pipelines_id_dict['phase 2']}/pipeline_runs/key"
 	api_data = make_api_call(phase_two_url, "POST")
 	if api_data:
 		print(f"Running Phase 2 with id: {api_data['pipeline_run']['id']}")
@@ -99,15 +99,15 @@ def phase_2(trigger_id):
 		if len(keep_going) == 0:
 			keep_going = 'y'
 		if keep_going == "y" or keep_going == "yes":
-			phase_3()
+			phase_3(pipelines_id_dict)
 		else:
 			print("Exiting.")
 			exit_program()
 
 
-def phase_3(trigger_id):
+def phase_3(pipelines_id_dict):
 	# this phase executes the dbt seed and build operations to create BigQuery views
-	phase_three_url = f"http://localhost:6789/api/pipeline_schedules/{trigger_id}/pipeline_runs/key"
+	phase_three_url = f"http://localhost:6789/api/pipeline_schedules/{pipelines_id_dict['phase 3']}/pipeline_runs/key"
 	api_data = make_api_call(phase_three_url, "POST")
 	if api_data:
 		print(f"Running Phase 3 with id: {api_data['pipeline_run']['id']}")
@@ -125,13 +125,13 @@ def main():
 3) Phase 3 : dbt build
 """).strip(" "))
 	if phase_number == 1:
-		phase_1(pipelines_id_dict['phase 1'])
+		phase_1(pipelines_id_dict)
 	
 	if phase_number == 2:
-		phase_2(pipelines_id_dict['phase 2'])
+		phase_2(pipelines_id_dict)
 	
 	if phase_number == 3:
-		phase_3(pipelines_id_dict['phase 3'])
+		phase_3(pipelines_id_dict)
 	
 	else:
 		print("No pipeline selected. Exiting.")

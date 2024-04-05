@@ -6,6 +6,7 @@ import pandas as pd
 from os import path
 from typing import Dict
 import pandas_gbq
+import os
 
 if 'data_exporter' not in globals():
     from mage_ai.data_preparation.decorators import data_exporter
@@ -57,7 +58,7 @@ def get_schema():
 def export_data_to_big_query(data_dict: Dict, **kwargs) -> None:
     country = data_dict['country']
 
-    project = "youtube-video-ranks"
+    project =  os.environ['GCS_PROJECT_NAME']
     dataset = "country_data"
     table_id = f'{dataset}.partitioned_{country}'
 

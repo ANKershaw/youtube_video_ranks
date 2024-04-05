@@ -68,7 +68,7 @@ GCS_PROJECT_NAME={gcs_project_name}
             """)
         
         with open(mage_start_win, "w") as file:
-            file.write(f"""docker run -it -p 6789:6789 -v $(pwd):/home/src -v {key_directory_path}:/home/keys --env-file .env mageai/mageai
+            file.write(f"""docker run -it -p 6789:6789 -v "%cd%:/home/src" -v {key_directory_path}:/home/keys --env-file .env mageai/mageai
             """)
             
         with open(mage_start_unix, "w") as file:

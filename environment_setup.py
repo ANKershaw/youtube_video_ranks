@@ -13,9 +13,10 @@ def main():
     file_list = [terraform_tfvars_file, env_file, mage_start_win, mage_start_unix]
     
     # Ask user for input
-    gcs_project_name = input("What is your Google Cloud project name: ").strip(" ").replace("'", "").replace('"', '')
+    gcs_project_name = input("What is your Google Cloud project name?\n"
+                             "(note: this is the full project name, usually with numbers at the end): ").strip(" ").replace("'", "").replace('"', '')
     
-    gcs_bucket_name = (input("What is the name of the bucket you want created?\n(note: this must be a unique name): ")
+    gcs_bucket_name = (input("What is the name of the bucket you want created?\n(note: this must be a globally unique name): ")
                        .strip(" ").replace("'", "").replace('"', ''))
     
     gcs_location_name = (input("In which geographical location is the bucket to be created?\n(default: US): ")
@@ -24,15 +25,15 @@ def main():
         gcs_location_name = "US"
         print("Using default: US")
         
-    gcs_region_name = (input("In which region would you like your bucket located?\n(default: us-west1):").strip(" ")
+    gcs_region_name = (input("In which region would you like your bucket located?\n(default: us-west1): ").strip(" ")
                        .replace("'", "").replace('"', ''))
     if len(gcs_region_name) == 0:
         gcs_region_name = "us-west1"
         print("Using default: us-west1")
     
     # terraform doesn't like '\' on Windows
-    gcs_key_location = (input("""What is the full path + filename of your Google Cloud account key?
-(eg:/Users/username/keys/service_account_key.json): """).strip(" ").
+    gcs_key_location = (input("What is the full path + filename of your Google Cloud account key? \n"
+                        "(eg:/Users/username/keys/service_account_key.json): ").strip(" ").
                         replace("'", "").replace('"', '').replace('\\', '/'))
     
     # Ask user to confirm the input

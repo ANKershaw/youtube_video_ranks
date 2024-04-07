@@ -67,7 +67,7 @@ The project is a series of pipelines orchestrated by [Mage](https://www.mage.ai/
 * **Setup**: create GCS project, save credentials locally, run setup script to create GCS bucket and BigQuery schema
 * **Phase 1**: (mage) import data from API, transform for data lake, save to GCS bucket 
 * **Phase 2**: (mage) import data from GCS, transform for data warehouse, save to BigQuery
-* **Phase 3**: (mage0 create BigQuery views via dbt, prepare for dashboard
+* **Phase 3**: (mage) create BigQuery views via dbt, prepare for dashboard
 * **Dashboard**: create dashboard in Looker Studio 
 
 ![Flow diagram in three phases. All phases are in a Mage orchestrator.](assets/flow_diagram.png "Flow Diagram for Youtube Trending Data Engineering Project")
@@ -89,7 +89,7 @@ Each table is partitioned by `trending_date`. The data is not clustered since cl
 are not effective for data less than 1GB. These datasets are 48MB, 18MB, and 58MB, respectively.
 
 ### Data Transformation Details
-Data is transformed with dbt. 
+Data is transformed with dbt. The individual tables for IN, JP, and US are given a new `category_name` field by combinig the `category_id` data with the seed file data which is a mapping of id to category name. All video data is then combined into one fact table for use in Looker Studio.
 
 <details>
     <summary>DAG image</summary>
@@ -224,7 +224,6 @@ terraform apply
     
 ### Mage
 
-Mage is where we will download the data files, process, and upload to GCS. 
 <p>There is a pre-configured mage start script in the mage_start.sh and mage_start.bin files to help you get mage started
 
 #### For Mac / Linux
@@ -244,7 +243,7 @@ After mage starts, you can check out the pipelines via:
 [the Mage console](http://localhost:6789/pipelines/youtube_video_ranks/edit?sideview=tree)
 
 Note: at startup, Mage may attempt to execute the pipelines on its own. They should fail with an error. You can proceed
-to the next step and run the script. 
+to the next step. 
 
 #### Data download / transform / upload with Mage
 

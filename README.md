@@ -34,15 +34,14 @@
 
 YouTube tracks statistics for all videos on the platform and using proprietary methodology, determines which videos are trending. 
 The list is unique for each country YouTube serves, meaning that users in the US are seeing a different trending list 
-than users in India or Japan. Given this information, what differences are there between trending videos in India, Japan, 
+than users in India or Japan. Given this information, can any similarities be found in the trending video data for India, Japan, 
 and the United States? 
 
 ## Dashboard
 
-Dashboard
-0 points: No dashboard
-2 points: A dashboard with 1 tile
-4 points: A dashboard with 2 tiles
+The dashboard was created in Looker Studio and is available [here](https://lookerstudio.google.com/reporting/e3e017c5-a048-435b-a77f-dc090efbfa57).
+
+![Youtube Trending Data Dashboard](assets/trending_dashboard.png)
 
 
 ## Data Source 
@@ -64,7 +63,7 @@ And three files that serve as a map for the `category_id` field. These are used 
 
 ## Project Breakdown
 
-The project is a series of piplines orchestrated by [Mage](https://www.mage.ai/). There are five distinct parts to the project:
+The project is a series of pipelines orchestrated by [Mage](https://www.mage.ai/). There are five distinct parts to the project:
 * **Setup**: create GCS project, save credentials locally, run setup script to create GCS bucket and BigQuery schema
 * **Phase 1**: (mage) import data from API, transform for data lake, save to GCS bucket 
 * **Phase 2**: (mage) import data from GCS, transform for data warehouse, save to BigQuery
@@ -199,17 +198,17 @@ Create project variable files by running:
 python3 environment_setup.py
 ```
 This script will ask for:
-1. Google Cloud project name (eg: 'youtube-video-ranks')
-2. The name of the bucket you want created (must be unique)
-3. Geographical region for the bucket (default: US)
-4. Region for the bucket (default: us-west1)
+1. Google Cloud project name (eg: 'youtube-video-ranks-1234'). If you don't remember your project name, it is in the service_account_key.json file you created.
+2. The name of the bucket you want created (must be GLOBALLY unique; try adding '-bucket' after your project name)
+3. [Geographical location](https://cloud.google.com/storage/docs/locations#available-locations) for the bucket (default: US)
+4. [Region](https://cloud.google.com/storage/docs/locations) for the bucket (default: us-west1)
 5. Location of your Google service account key (should be `~/keys/service_account_key.json`)
 
 The script will create the following files:
-    terraform/terraform.tfvars
-    mage/.env
-    mage/mage_start.bat
-    mage/mage_start.sh
+* terraform/terraform.tfvars
+* mage/.env
+* mage/mage_start.bat
+* mage/mage_start.sh
 
 
 ### Terraform GCS bucket creation
@@ -242,7 +241,10 @@ From 'youtube_video_ranks/mage' run:
 ```
 
 After mage starts, you can check out the pipelines via:
-[localhost:6789](http://localhost:6789/pipelines/youtube_video_ranks/edit?sideview=tree)
+[the Mage console](http://localhost:6789/pipelines/youtube_video_ranks/edit?sideview=tree)
+
+Note: at startup, Mage may attempt to execute the pipelines on its own. They should fail with an error. You can proceed
+to the next step and run the script. 
 
 #### Data download / transform / upload with Mage
 
@@ -273,7 +275,8 @@ Google Cloud Storage
 * rankings_US.parquet - API data from USvideos.csv.zip created in Mage pipeline Phase 1
 
 BigQuery
-Schema: country_data
+<p>Schema: country_data
+
 * partitioned_IN - partitioned table created in Mage pipeline Phase 2
 * partitioned_JP - partitioned table created in Mage pipeline Phase 2
 * partitioned_US - partitioned table created in Mage pipeline Phase 2
@@ -284,7 +287,7 @@ Schema: country_data
 * stg_partitioned_JP - stage table created by dbt in Mage pipeline Phase 3
 * stg_partitioned_US - stage table created by dbt in Mage pipeline Phase 3
 * dim_categories - dimension table for categories created by dbt in Mage pipeline Phase 3
-* fact_trending - fact table of video date created by dbt in Mage pipeline Phase 3
+* fact_trending - fact table of video data created by dbt in Mage pipeline Phase 3
 
 
 # Cleanup
